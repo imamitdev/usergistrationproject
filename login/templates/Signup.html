@@ -1,0 +1,43 @@
+{% extends 'index.html' %} {% block title %} Login {% endblock title %}
+{% block content %}
+
+<div class="container">
+    <div class="wrapper">
+        <div class="title"><span>Signup Form</span></div>
+        <div class="row">
+            {% for message in messages %}
+            <h5{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Alert ! {% endif %}
+                {{ message }}
+                </h5>
+                {% endfor %}
+        </div>
+        <form action="/signup/" method="post">
+            {% csrf_token %}
+            <div class="row">
+                <input type="text" placeholder=" Enter Name" name="name" required />
+            </div>
+            <div class="row">
+                <input type="number" placeholder="Mobile Number" maxlength="10" minlength="10" name="number" required />
+            </div>
+            <div class="row">
+                <input type="email" placeholder="Email ID" name="email" required />
+            </div>
+            <div class="row">
+                <input type="text" placeholder="Password" name="password" required />
+            </div>
+            <div class="row">
+                <input type="password" placeholder="Confirm Password" name="cpassword" required />
+            </div>
+            <!-- <di
+                v class="pass"><a href="#">Forgot password?</a></di> -->
+            <div class="row button">
+                <input type="submit" value="SignUp" />
+            </div>
+            <div class="signup-link">
+                Already Member? <a href="{% url 'login' %}">Login Now</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
