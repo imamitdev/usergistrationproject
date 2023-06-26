@@ -1,15 +1,31 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate,login,logout
 
 # Create your views here.
 def home(request):
-    return render (request,'Signup.html')
+    return render (request,'home.html')
 
 def login_page(request):
+    if request.user.is_authenticated:
+        return redirect('/')
+    if request.method == 'POST':
+        user_name=request.POST['username']
+        password=request.POST['password']
+        user=authenticate(username=user_name,password=password)
+        if user is not None:
+            login(request,user)
+            messages.success(request, "login successfully ")
+            return redirect('/')
+        else:
+            messages.error(request, "Invalid User Password ")
+            return redirect('/login')
+
     return render(request,'login.html')
 def signup_page(request):
+    if request.user.is_authenticated:
+        return redirect('/')
     if request.method =='POST':
         
         full_name=request.POST['name']
@@ -26,12 +42,17 @@ def signup_page(request):
             messages.error(request, "Password and confirm password did't Match ")
             return redirect('/signup')
         elif user==True:
-           messages.error(request, "Uer Name already Exist")
+           messages.error(request, "User Name already Exist")
            return redirect('/signup')
         else:
-            user=User.objects.create(username=number,email=email,password=cpassword)
+            user=User.objects.create(username=number,email=email)
+            user.password=cpassword
             user.first_name=full_name
             user.save()
             messages.success(request,'Member Successfully Register')
             return redirect('/login')
     return render(request,'Signup.html')
+
+def logout_(request):
+    logout(request)
+    return redirect('/')
