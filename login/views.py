@@ -13,9 +13,10 @@ def login_page(request):
     if request.method == 'POST':
         user_name=request.POST['username']
         password=request.POST['password']
-        user=authenticate(username=user_name,password=password)
-        if user is not None:
-            login(request,user)
+        user_check=authenticate(request,username=user_name,password=password)
+        print(user_check)
+        if user_check is not None:
+            login(request,user_check)
             messages.success(request, "login successfully ")
             return redirect('/')
         else:
@@ -33,7 +34,7 @@ def signup_page(request):
         email=request.POST['email']
         password=request.POST['password']
         cpassword=request.POST['cpassword']
-        user=User.objects.filter(username=number).exists()
+        user_check=User.objects.filter(username=number).exists()
        
         if len(number)!=10:
             messages.error(request, "Number Should be 10 digit ")
@@ -41,12 +42,12 @@ def signup_page(request):
         elif password != cpassword:
             messages.error(request, "Password and confirm password did't Match ")
             return redirect('/signup')
-        elif user==True:
+        elif user_check==True:
            messages.error(request, "User Name already Exist")
            return redirect('/signup')
         else:
-            user=User.objects.create(username=number,email=email)
-            user.password=cpassword
+            user=User.objects.create_user(number,email,cpassword)
+           
             user.first_name=full_name
             user.save()
             messages.success(request,'Member Successfully Register')
